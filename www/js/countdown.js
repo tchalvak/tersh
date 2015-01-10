@@ -14,16 +14,21 @@
 		if(options) {
 			$.extend(settings, options);
 		}
+
+		console.log('Target date set as: ['+settings['date']+']');
 		
 		//main countdown function
 		function countdown_proc() {
-			
 			eventDate = Date.parse(settings['date']) / 1000;
 			currentDate = Math.floor($.now() / 1000);
+
+			console.log('eventDate: ', eventDate, 'currentDate: ', currentDate);
 			
 			if(eventDate <= currentDate) {
 				callback.call(this);
-				clearInterval(interval);
+				if("undefined" !== typeof(interval)){
+					clearInterval(interval);
+				}
 			}
 			
 			seconds = eventDate - currentDate;
@@ -51,7 +56,7 @@
 				seconds = (String(seconds).length >= 2) ? seconds : "0" + seconds;
 			}
 			
-			//update the countdown's html values.
+			//update the countdown's html values as long as it's a valid date
 			if(!isNaN(eventDate)) {
 				thisEl.find(".days").text(days);
 				thisEl.find(".hours").text(hours);
@@ -59,7 +64,9 @@
 				thisEl.find(".seconds").text(seconds);
 			} else { 
 				alert("Invalid date. Here's an example: 12 Tuesday 2012 17:30:00");
-				clearInterval(interval); 
+				if("undefined" !== typeof(interval)){
+					clearInterval(interval);
+				}
 			}
 		}
 		

@@ -1,9 +1,7 @@
-//Hook up the tweet display
-
-$(document).ready(function() {
+$(function() {
 						   
 	$("#countdown").countdown({
-				date: "5 january 2015 12:00:00",
+				date: "7 february 2015 12:00:00",
 				format: "on"
 			},
 			
@@ -11,10 +9,12 @@ $(document).ready(function() {
 				// callback function
 			});
 
+    /*
+	//Hook up the tweet display
     $(".tweet").tweet({
         username: "tchalvak",
         count: 3,
         loading_text: "loading tweets..."
-    });
+    });*/
 
 });	
