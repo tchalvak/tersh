@@ -1,7 +1,7 @@
 $(function() {
 						   
 	$("#countdown").countdown({
-				date: "7 february 2015 12:00:00",
+				date: "7 may 2015 12:00:00",
 				format: "on"
 			},
 			
