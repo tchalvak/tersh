@@ -1,5 +1,9 @@
 <?php
+define('ABSPATH', __DIR__.'/');
+require_once(ABSPATH.'../wp-config.php');
+$loaded = extension_loaded('mysql');
 
-var_dump(extension_loaded('mysql'));
-
-mysql_connect();
+if($loaded){
+    echo 'Mysql extension loaded';
+   }
+//mysql_connect();
