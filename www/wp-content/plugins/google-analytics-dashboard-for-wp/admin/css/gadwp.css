@@ -1,40 +1,37 @@
 /* Tab navigation */
-#gadwp-events, #gadwp-custom, #gadwp-advanced, #gadwp-exclude, #gadwp-config {
+#gadwp-events, #gadwp-custom, #gadwp-advanced, #gadwp-exclude,
+	#gadwp-config {
 	display: none;
 }
 
 /* Options pages */
-table.options {
+table.gadwp-settings-options {
 	padding-left: 10px;
 	width: 100%;
 }
 
-.options td {
+.gadwp-settings-options td {
 	padding: 0px 5px 5px 5px;
 }
 
-td.title, td.info {
+td.gadwp-settings-title, td.info {
 	width: 130px;
 	padding-left: 20px;
 }
 
-td.title-select {
+td.gadwp-settings-title-s {
 	width: 300px;
 }
 
-.gadwp-help{
-	padding-left:15px;	
+.gadwp-help {
+	padding-left: 15px;
 }
 
-td.debugging {
-	width: 300px;
-}
-
-td.info {
+td.gadwp-settings-info {
 	padding-bottom: 15px;
 }
 
-td.title label {
+td.gadwp-settings-title label {
 	font-weight: bold;
 }
 
@@ -53,15 +50,11 @@ td.title label {
 	vertical-align: top;
 }
 
-pre.gadash {
-	
-}
-
-pre.log_data {
+pre.gadwp-settings-logdata {
 	white-space: pre-wrap;
 }
 
-td.roles {
+td.gadwp-settings-roles {
 	padding-bottom: 15px;
 }
 
@@ -69,110 +62,129 @@ td.roles {
 	width: 50px;
 }
 
-.event-option, .event-option-desc {
-	float: left;
-}
-
 #gapi-access-code {
 	color: red !important;
 }
 
+#poststuff.gadwp h2 {
+	padding-bottom: 0;
+}
+
 /* Options pages ON/OFF Switch */
-.onoffswitch {
+.gadwp-settings-switchoo {
 	position: relative;
-	width: 55px;
+	width: 50px;
 	float: left;
+	border: none !important;
+	padding: 0 !important;
+	height: 22px !important;
+	-moz-box-shadow: none !important;
+	-webkit-box-shadow: none !important;
+	-o-box-shadow: none !important;
+	box-shadow: none !important;
 	-webkit-user-select: none;
 	-moz-user-select: none;
 	-ms-user-select: none;
 }
 
-.onoffswitch-checkbox {
+.gadwp-settings-switchoo-checkbox {
 	display: none !important;
 }
 
-.onoffswitch-label {
+.gadwp-settings-switchoo-label {
 	display: block;
 	overflow: hidden;
 	cursor: pointer;
-	border: 2px solid #C9C9C9;
-	border-radius: 5px;
+	background: transparent;
+	border: 1px solid #ddd;
+	border-radius: 2px;
 }
 
-.onoffswitch-inner {
+.gadwp-settings-switchoo-inner {
 	width: 200%;
 	margin-left: -100%;
-	-moz-transition: margin 0.3s ease-in 0s;
-	-webkit-transition: margin 0.3s ease-in 0s;
-	-o-transition: margin 0.3s ease-in 0s;
-	transition: margin 0.3s ease-in 0s;
+	border-radius: 2px;
+	-moz-transition: margin 0.2s ease-in 0s;
+	-webkit-transition: margin 0.2s ease-in 0s;
+	-o-transition: margin 0.2s ease-in 0s;
+	transition: margin 0.2s ease-in 0s;
 }
 
-.onoffswitch-inner:before, .onoffswitch-inner:after {
+.gadwp-settings-switchoo-inner:before, .gadwp-settings-switchoo-inner:after {
 	float: left;
 	width: 50%;
-	height: 18px;
-	padding: 0;
-	line-height: 18px;
-	font-size: 12px;
-	color: white;
-	font-family: Trebuchet, Arial, sans-serif;
-	font-weight: bold;
+	font-weight: normal;
 	-moz-box-sizing: border-box;
 	-webkit-box-sizing: border-box;
+	-o-box-sizing: border-box;
 	box-sizing: border-box;
+	height: 22px;
+	line-height: 22px;
+	font-size: 12px;
 }
 
-.onoffswitch-inner:before {
-	content: "ON";
-	padding-left: 6px;
-	background-color: #1269BA;
-	color: #FFFFFF;
+.gadwp-settings-switchoo-inner:before {
+	content: "On";
+	padding-left: 5px;
+	border-bottom: none;
+	/*	background-color: #00a0d2;
+	color: #fff;  /* inherit from button props */
 }
 
-.onoffswitch-inner:after {
-	content: "OFF";
-	padding-right: 6px;
-	background-color: #EEEEEE;
-	color: #999999;
+.gadwp-settings-switchoo-inner:after {
+	content: "Off";
+	padding-right: 5px;
+	background-color: #ddd;
 	text-align: right;
 }
 
-.onoffswitch-switch {
-	width: 18px;
-	margin: 0px;
-	background: #FFFFFF;
-	border: 2px solid #C9C9C9;
-	border-radius: 5px;
+.gadwp-settings-switchoo-switch {
+	width: 22px;
+	height: 22px;
+	background: #fff;
+	color: #ddd;
+	border: 1px solid #ddd;
+	border-radius: 2px;
 	position: absolute;
 	top: 0;
 	bottom: 0;
-	right: 33px;
-	-moz-transition: all 0.3s ease-in 0s;
-	-webkit-transition: all 0.3s ease-in 0s;
-	-o-transition: all 0.3s ease-in 0s;
-	transition: all 0.3s ease-in 0s;
-	background-image: -moz-linear-gradient(center top, rgba(0, 0, 0, 0.1) 0%,
-		rgba(0, 0, 0, 0) 100%);
-	background-image: -webkit-linear-gradient(center top, rgba(0, 0, 0, 0.1)
-		0%, rgba(0, 0, 0, 0) 100%);
-	background-image: -o-linear-gradient(center top, rgba(0, 0, 0, 0.1) 0%,
-		rgba(0, 0, 0, 0) 100%);
-	background-image: linear-gradient(center top, rgba(0, 0, 0, 0.1) 0%,
-		rgba(0, 0, 0, 0) 100%);
+	right: 27px;
+	-moz-transition: all 0.2s ease-in 0s;
+	-webkit-transition: all 0.2s ease-in 0s;
+	-o-transition: all 0.2s ease-in 0s;
+	transition: all 0.2s ease-in 0s;
 }
 
-.onoffswitch-checkbox:checked+.onoffswitch-label .onoffswitch-inner {
+.gadwp-settings-switchoo-switch:hover {
+	color: #aaa;
+	border-color: #aaa;
+}
+
+.gadwp-settings-switchoo-switch:after {
+	margin: 0;
+	outline: 0;
+	display: inline-block;
+	font: 400 16px/16px dashicons;
+	content: "\f228";
+	padding: 3px 0 0 3px;
+	text-align: left;
+	text-decoration: none;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+.gadwp-settings-switchoo-checkbox:checked+.gadwp-settings-switchoo-label .gadwp-settings-switchoo-inner {
 	margin-left: 0;
 }
 
-.onoffswitch-checkbox:checked+.onoffswitch-label .onoffswitch-switch {
+.gadwp-settings-switchoo-checkbox:checked+.gadwp-settings-switchoo-label .gadwp-settings-switchoo-switch {
 	right: 0px;
 }
 
 .switch-desc {
 	float: left;
 	margin-left: 10px;
+	line-height: 20px;
 }
 
 /* Admin Widget & Real-Time Stats*/
@@ -352,6 +364,9 @@ td.roles {
 	color: #777;
 	padding: 0px 5px 0px 5px;
 	margin: 0px 0px 0px 0px;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;	
 }
 
 .gadash-wrapper .inside .small-box p {
