@@ -13,3 +13,4 @@ sitemap.xml.gz
 wp-config.php
 unclean
 www/wp-content/uploads/
+/untracked-sql/
