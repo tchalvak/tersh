@@ -15,6 +15,8 @@ define('SC_ADMIN', admin_url( 'options-general.php?page=shortcoder' ) );
 
 $sc_donate_link = 'http://bit.ly/scDonate';
 
+function sc_replacecolon( $content ){ return str_replace( '[sc:', '[sc name=', $content ); }
+add_filter( 'the_content', 'sc_replacecolon', 5 );
 
 
 // Load languages
