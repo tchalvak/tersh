@@ -1,0 +1,18 @@
+; tershronalds.com Dumped Mon Mar 21 14:31:32 2016
+;
+tershronalds.com.   86400   IN  SOA ns1.he.net. hostmaster.he.net. (
+                    2015052003  ;serial
+                    10800       ;refresh
+                    1800        ;retry
+                    604800      ;expire
+                    86400   )   ;minimum
+tershronalds.com.   86400   IN  NS  ns1.he.net.
+tershronalds.com.   86400   IN  NS  ns2.he.net.
+tershronalds.com.   86400   IN  NS  ns3.he.net.
+tershronalds.com.   86400   IN  NS  ns4.he.net.
+tershronalds.com.   86400   IN  NS  ns5.he.net.
+tershronalds.com.   14400   IN  A   50.56.48.239
+www.tershronalds.com.   86400   IN  CNAME   tershronalds.com.
+mail.tershronalds.com.  86400   IN  CNAME   tershronalds.com.
+tershronalds.com.   86400   IN  MX  10 tershronalds.com.
+tershronalds.com.   86400   IN  AAAA    2001:4801:7901:0:44ee:e001:0:2
