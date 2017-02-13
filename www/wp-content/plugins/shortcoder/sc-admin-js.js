@@ -59,6 +59,11 @@ $j(document).ready(function(){
 		$j(this).remove();
 	});
 	
+	$j( '.sc_modal_close' ).click(function(){
+		sc_modal( 'close' );
+	});
+	
+	sc_modal( 'show' );
 });
 
 var sc_closeiframe = function(){
@@ -67,19 +72,52 @@ var sc_closeiframe = function(){
 
 function sc_triggerElements(val){
 	if(val != ''){
+		
+		// Not used
 		if(sc_wsc(val)){
 			code = '"' + val + '"';
 		}else{
 			code = val;
 		}
+		//
 		
 		$j('#sc_code').show();
-		$j('#sc_code').html('Your shortcode is <b contenteditable="true" disabled="disabled">[sc:' + code + ']</b>');
+		$j('#sc_code').html('Your shortcode is <b contenteditable="true" disabled="disabled">[sc name="' + val + '"]</b>');
 		$j('#sc_submit').removeClass('sc_btdisabled').removeAttr('disabled');
 	}else{
 		$j('#sc_code').hide();
 		$j('#sc_submit').addClass('sc_btdisabled').attr('disabled', 'disabled');
 	}
+}
+
+function sc_modal( action ){
+	
+	if( typeof( localStorage ) !== "undefined" ){
+		if( action == 'show' ){
+			
+			if ( localStorage[ 'sc_modal_' + sc_version ] == null ){
+				
+				$j.ajax({
+					type: 'GET',
+					dataType: 'html',
+					crossDomain: true,
+					url: 'https://raw.githubusercontent.com/vaakash/aakash-web/master/misc/release_notes/shortcoder_v341.html',
+					success: function ( data ) {
+						$j('.sc_modal > div').html( data );
+						$j('.sc_modal').fadeIn();
+					}
+				});
+				
+			}
+			
+		} else if( action == 'close' ){
+			
+			localStorage[ 'sc_modal_' + sc_version ] = 'closed';
+			$j('.sc_modal').hide();
+			
+		}
+	}
+	
 }
 
 function sc_wsc(s) {

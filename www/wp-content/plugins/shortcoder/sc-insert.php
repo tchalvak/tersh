@@ -1,7 +1,7 @@
 <?php
 /**
  * Shortcoder include for inserting and editing shortcodes in post and pages
- * v1.2
+ * v1.3
  **/
  
 if ( ! isset( $_GET['TB_iframe'] ) )
@@ -129,12 +129,15 @@ $(document).ready(function(){
 			}
 		});
 		
+		// Not used
 		if(wsc(scname)){
 			name = '"' + scname + '"';
 		}else{
 			name = scname;
 		}
-		sc = '[sc:' + name + ' ' + params + ']';
+		//
+		
+		sc = '[sc name="' + scname + '" ' + params + ']';
 		
 		if( typeof parent.send_to_editor !== undefined ){
 			parent.send_to_editor(sc);

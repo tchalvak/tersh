@@ -2,6 +2,7 @@
 /**
  * Author: Alin Marcu
  * Author URI: https://deconf.com
+ * Copyright 2013 Alin Marcu
  * License: GPLv2 or later
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
@@ -67,9 +68,6 @@ if ( ! class_exists( 'GADWP_Config' ) ) {
 			if ( isset( $options['ga_crossdomain_list'] ) ) {
 				$options['ga_crossdomain_list'] = sanitize_text_field( $options['ga_crossdomain_list'] );
 			}
-			if ( isset( $options['ga_dash_apikey'] ) ) {
-				$options['ga_dash_apikey'] = sanitize_text_field( $options['ga_dash_apikey'] );
-			}
 			if ( isset( $options['ga_dash_clientid'] ) ) {
 				$options['ga_dash_clientid'] = sanitize_text_field( $options['ga_dash_clientid'] );
 			}
@@ -97,11 +95,17 @@ if ( ! class_exists( 'GADWP_Config' ) ) {
 			if ( isset( $options['ga_category_dimindex'] ) ) {
 				$options['ga_category_dimindex'] = (int) $options['ga_category_dimindex'];
 			}
+			if ( isset( $options['ga_tag_dimindex'] ) ) {
+				$options['ga_tag_dimindex'] = (int) $options['ga_tag_dimindex'];
+			}
 			if ( isset( $options['ga_user_dimindex'] ) ) {
 				$options['ga_user_dimindex'] = (int) $options['ga_user_dimindex'];
 			}
 			if ( isset( $options['ga_pubyear_dimindex'] ) ) {
 				$options['ga_pubyear_dimindex'] = (int) $options['ga_pubyear_dimindex'];
+			}
+			if ( isset( $options['ga_pubyearmonth_dimindex'] ) ) {
+				$options['ga_pubyearmonth_dimindex'] = (int) $options['ga_pubyearmonth_dimindex'];
 			}
 			if ( isset( $options['ga_aff_tracking'] ) ) {
 				$options['ga_aff_tracking'] = (int) $options['ga_aff_tracking'];
@@ -111,6 +115,12 @@ if ( ! class_exists( 'GADWP_Config' ) ) {
 			}
 			if ( isset( $options['ga_cookiename'] ) ) { // v4.9
 				$options['ga_cookiename'] = sanitize_text_field( $options['ga_cookiename'] );
+			}
+			if ( isset( $options['pagetitle_404'] ) ) { // v4.9.4
+				$options['pagetitle_404'] = sanitize_text_field( $options['pagetitle_404'] );
+			}
+			if ( isset( $options['maps_api_key'] ) ) { // v4.9.4
+				$options['maps_api_key'] = sanitize_text_field( $options['maps_api_key'] );
 			}
 			if ( isset( $options['ga_cookieexpires'] ) && $options['ga_cookieexpires'] ) { // v4.9
 				$options['ga_cookieexpires'] = (int) $options['ga_cookieexpires'];
@@ -142,8 +152,6 @@ if ( ! class_exists( 'GADWP_Config' ) ) {
 					if ( is_network_admin() ) {
 						$network_options['ga_dash_profile_list'] = $this->options['ga_dash_profile_list'];
 						$options['ga_dash_profile_list'] = array();
-						$network_options['ga_dash_apikey'] = $this->options['ga_dash_apikey'];
-						$options['ga_dash_apikey'] = '';
 						$network_options['ga_dash_clientid'] = $this->options['ga_dash_clientid'];
 						$options['ga_dash_clientid'] = '';
 						$network_options['ga_dash_clientsecret'] = $this->options['ga_dash_clientsecret'];
@@ -197,7 +205,9 @@ if ( ! class_exists( 'GADWP_Config' ) ) {
 			$flag = false;
 
 			if ( GADWP_CURRENT_VERSION != get_option( 'gadwp_version' ) ) {
-
+				$flag = true;
+				update_option( 'gadwp_version', GADWP_CURRENT_VERSION );
+				update_option( 'gadwp_got_updated', true );
 				$rebuild_token = json_decode( $this->options['ga_dash_token'] ); // v4.8.2
 				if ( is_object( $rebuild_token ) && ! isset( $rebuild_token->token_type ) ) {
 					if ( isset( $this->options['ga_dash_refresh_token'] ) ) {
@@ -210,17 +220,10 @@ if ( ! class_exists( 'GADWP_Config' ) ) {
 				} else {
 					unset( $this->options['ga_dash_refresh_token'] );
 				}
-				GADWP_Tools::unset_cookie( 'default_metric' );
-				GADWP_Tools::unset_cookie( 'default_dimension' );
-				GADWP_Tools::unset_cookie( 'default_view' );
 				GADWP_Tools::clear_cache();
-				GADWP_Tools::clear_transients(); // 4.8.3 to be removed after a few months
-				$flag = true;
 				GADWP_Tools::delete_cache( 'last_error' );
-				update_option( 'gadwp_version', GADWP_CURRENT_VERSION );
-				update_option( 'gadwp_got_updated', true );
 				if ( is_multisite() ) { // Cleanup errors and cookies on the entire network
-					foreach ( wp_get_sites( array( 'limit' => apply_filters( 'gadwp_sites_limit', 100 ) ) ) as $blog ) {
+					foreach ( GADWP_Tools::get_sites( array( 'number' => apply_filters( 'gadwp_sites_limit', 100 ) ) ) as $blog ) {
 						switch_to_blog( $blog['blog_id'] );
 						GADWP_Tools::delete_cache( 'gapi_errors' );
 						restore_current_blog();
@@ -228,6 +231,9 @@ if ( ! class_exists( 'GADWP_Config' ) ) {
 				} else {
 					GADWP_Tools::delete_cache( 'gapi_errors' );
 				}
+				GADWP_Tools::unset_cookie( 'default_metric' );
+				GADWP_Tools::unset_cookie( 'default_dimension' );
+				GADWP_Tools::unset_cookie( 'default_view' );
 			}
 			if ( ! isset( $this->options['ga_enhanced_links'] ) ) {
 				$this->options['ga_enhanced_links'] = 0;
@@ -293,16 +299,25 @@ if ( ! class_exists( 'GADWP_Config' ) ) {
 				$this->options['ga_author_dimindex'] = 0;
 				$flag = true;
 			}
+			if ( ! isset( $this->options['ga_tag_dimindex'] ) ) {
+				$this->options['ga_tag_dimindex'] = 0;
+				$flag = true;
+			}
 			if ( ! isset( $this->options['ga_category_dimindex'] ) ) {
 				$this->options['ga_category_dimindex'] = 0;
 				$flag = true;
 			}
+			$options['ga_tag_dimindex'] = 0;
 			if ( ! isset( $this->options['ga_user_dimindex'] ) ) {
 				$this->options['ga_user_dimindex'] = 0;
 				$flag = true;
 			}
 			if ( ! isset( $this->options['ga_pubyear_dimindex'] ) ) {
 				$this->options['ga_pubyear_dimindex'] = 0;
+				$flag = true;
+			}
+			if ( ! isset( $this->options['ga_pubyearmonth_dimindex'] ) ) {
+				$this->options['ga_pubyearmonth_dimindex'] = 0;
 				$flag = true;
 			}
 			if ( ! isset( $this->options['ga_event_affiliates'] ) ) {
@@ -347,6 +362,14 @@ if ( ! class_exists( 'GADWP_Config' ) ) {
 				$this->options['api_backoff'] = 0;
 				$flag = true;
 			}
+			if ( ! isset( $this->options['pagetitle_404'] ) ) { // v4.9.4
+				$this->options['pagetitle_404'] = 'Page Not Found';
+				$flag = true;
+			}
+			if ( ! isset( $this->options['maps_api_key'] ) ) { // v4.9.4
+				$this->options['maps_api_key'] = '';
+				$flag = true;
+			}
 			if ( isset( $this->options['ga_tracking_code'] ) ) {
 				unset( $this->options['ga_tracking_code'] );
 				$flag = true;
@@ -357,6 +380,10 @@ if ( ! class_exists( 'GADWP_Config' ) ) {
 			}
 			if ( isset( $this->options['ga_dash_frontend_keywords'] ) ) { // v4.8
 				unset( $this->options['ga_dash_frontend_keywords'] );
+				$flag = true;
+			}
+			if ( isset( $this->options['ga_dash_apikey'] ) ) { // v4.9.1.3
+				unset( $this->options['ga_dash_apikey'] );
 				$flag = true;
 			}
 			if ( isset( $this->options['ga_dash_jailadmins'] ) ) { // v4.7

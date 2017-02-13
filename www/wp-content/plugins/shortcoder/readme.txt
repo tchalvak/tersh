@@ -6,8 +6,8 @@ Tags: shortcode, ads, adsense, advertising, bookmark, bookmarking, bookmarks, cu
 Donate link: http://bit.ly/scDonate
 License: GPLv2 or later
 Requires at least: 3.3
-Tested up to: 3.9.1
-Stable tag: 3.4
+Tested up to: 4.4
+Stable tag: 3.4.1
 
 Create custom "Shortcodes" with HTML, Javascript snippets stored in it and use that shortcode within posts and pages. Check the demo video.
 
@@ -15,14 +15,12 @@ Create custom "Shortcodes" with HTML, Javascript snippets stored in it and use t
 
 Shortcoder is a plugin which allows to create a custom shortcode and store HTML, Javascript and other snippets in it. So if that shortcode is used in any post or pages, then the code stored in the shortcode get exceuted in that place.
 
-[Check out the **LIVE DEMO** of the plugin](http://www.aakashweb.com/demos/super-rss-reader/)
-
 = Features =
 
 * Create **"custom shortcodes"** easily and use them within WordPress posts
-* Use any name for the created shortcode (ex: `[sc:youtube]`)
+* Use any name for the created shortcode (ex: `[sc name="youtube"]`)
 * Use any kind of **HTML** as Shortcode content.
-* Parameters can also added to HTML (ex: `<strong>%%mytext%%</strong> [sc:testing mytext="hello"]` )
+* Parameters can also added to HTML (ex: `<strong>%%mytext%%</strong> [sc name="testing" mytext="hello"]` )
 * Visual editor for adding shortcode contents.
 * Global tinyMCE button available in the editing toolbar for inserting created shortcodes.
 * Globally disable the shortcode when not needed.
@@ -34,14 +32,18 @@ Shortcoder is a plugin which allows to create a custom shortcode and store HTML,
 
 1. Create a shortcode named "adsenseAd" in the Shortcoder admin page.
 1. Paste the adsense code in the box given and save it.
-1. Use `[sc:adsenseAd]` in your posts and pages.
+1. Use `[sc name="adsenseAd"]` in your posts and pages.
 1. Tada !!! the ad appears in the post.
 
 * Using this idea, shortcodes can be created for frequently used snippets.
-* You can also add parameters (like `%%id%%`) inside the snippets, and vary it like `[sc:youtube id="GrlRADfvjII"]`
+* You can also add parameters (like `%%id%%`) inside the snippets, and vary it like `[sc name="youtube" id="GrlRADfvjII"]`
 * This plugin will be hugely useful to all !!!
 
 DONATE: If you like this plugin, you can show your [support by donating some amount](http://bit.ly/scDonate).
+
+= Fix for WordPress 4.4 issue =
+
+Starting Shortcoder 3.4.1 the syntax for shortcoder is [sc name="your shortcode"]. This is in effect to the shortcode API related changes made in WordPress core which made old the syntax unrecognizable. Version 3.4.1 automatically recognizes the old syntax only in posts where the shortcode is inserted directly and not in widgets or in drag and drop themes modules. Those areas need to be manually replaced from old `[sc:my_shortcode]` to the new `[sc name="my_shortcode"]` syntax. Please use the below resources for any queries.
 
 = Resources =
 
@@ -57,7 +59,7 @@ DONATE: If you like this plugin, you can show your [support by donating some amo
 1. Go to the "Shortcoder" admin page. Admin page is under the "Settings" menu.
 1. Enter a shortcode name.
 1. Paste some code in it.
-1. Then use the shortcode `[sc:"name of the shortcode"]` in your post. ex: If "youtube" is the shortcode name, then just use `[sc:youtube]` in your posts
+1. Then use the shortcode `[sc name="name of the shortcode"]` in your post. ex: If "youtube" is the shortcode name, then just use `[sc name="youtube"]` in your posts
 1. That's all ! 
 
 You can also insert some parameters within the post. Check this page to [learn more](http://www.aakashweb.com/wordpress-plugins/shortcoder/).
@@ -68,7 +70,7 @@ Please visit the [Plugin homepage](http://www.aakashweb.com/wordpress-plugins/sh
 
 = I've created a shortcode, how to use it ? =
 
-For example, consider you made a shortcode "advertisement". Then you should use the shortcode `[sc:advertisement]` in your post.
+For example, consider you made a shortcode "advertisement". Then you should use the shortcode `[sc name="advertisement"]` in your post.
 
 = How to temporarily disable a shortcode ? =
 
@@ -87,6 +89,10 @@ Note: When you disable a shortcode, the shortcode will not be executed in the pa
 [More Screenshots](http://www.aakashweb.com/wordpress-plugins/shortcoder/)
 
 == Changelog ==
+
+= 3.4.1 =
+* Fixed Shortcoder not working in WordPress 4.4
+* Changed the shortcoder syntax from `[sc:the_name]` to `[sc name="the_name"]` permanently in effect of WordPress 4.4 changes.
 
 = 3.4 =
 * New feature: Embedded/Nested shortcodes is now supported.

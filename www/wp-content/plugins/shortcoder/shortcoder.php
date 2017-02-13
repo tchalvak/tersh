@@ -4,19 +4,17 @@ Plugin Name: Shortcoder
 Plugin URI: http://www.aakashweb.com
 Description: Shortcoder is a plugin which allows to create a custom shortcode and store HTML, Javascript and other snippets in it. So if that shortcode is used in any post or pages, then the code stored in the shortcode get exceuted in that place. You can create a shortcode for Youtube videos, adsense ads, buttons and more.
 Author: Aakash Chakravarthy
-Version: 3.4
+Version: 3.4.1
 Author URI: http://www.aakashweb.com/
 */
 
-define('SC_VERSION', '3.4');
+define('SC_VERSION', '3.4.1');
 define('SC_AUTHOR', 'Aakash Chakravarthy');
 define('SC_URL', plugins_url('',__FILE__) );
 define('SC_ADMIN', admin_url( 'options-general.php?page=shortcoder' ) );
 
 $sc_donate_link = 'http://bit.ly/scDonate';
 
-function sc_replacecolon( $content ){ return str_replace( '[sc:', '[sc name=', $content ); }
-add_filter( 'the_content', 'sc_replacecolon', 5 );
 
 
 // Load languages
@@ -102,7 +100,7 @@ function shortcoder_all_ok($name){
 function shortcoder($atts, $content) { 
 	
 	$sc_options = get_option('shortcoder_data');
-	
+
 	// Get the Shortcode name
 	if(isset($atts[0])){
 		$sc_name = str_replace(array('"', "'", ":"), '', $atts[0]);
@@ -163,6 +161,12 @@ function shortcoder($atts, $content) {
 	}
 }
 
+
+// Workaround for shortcoder not working in WordPress 4.4
+function sc_replace_colon_content( $content ){
+	return str_replace( '[sc:', '[sc name=', $content );
+}
+add_filter( 'the_content', 'sc_replace_colon_content', 5 );
 
 
 // Shortcoder admin page
@@ -231,6 +235,11 @@ function sc_admin_page(){
 
 <!-- Shortcoder Admin page --> 
 
+<div class="sc_modal">
+<span class="sc_modal_close"></span>
+<div></div>
+</div>
+
 <div class="wrap">
 <?php sc_admin_buttons('fbrec'); ?>
 <h2><img width="32" height="32" src="<?php echo SC_URL; ?>/images/shortcoder.png" align="absmiddle"/> Shortcoder<sup class="smallText"> v<?php echo SC_VERSION; ?></sup></h2>
@@ -247,13 +256,13 @@ function sc_admin_page(){
 	<form method="post" id="sc_form">
 	
 		<div class="sc_section">
-			<label for="sc_name" class="sc_fld_title"><?php _e( "Title:", 'shortcoder' ); ?>:</label>
+			<label for="sc_name" class="sc_fld_title"><?php _e( "Title:", 'shortcoder' ); ?></label>
 			<span class="sc_name_wrap"><input type="text" name="sc_name" id="sc_name" value="<?php echo isset($sc_name_edit) ? $sc_name_edit : ''; ?>" placeholder="Enter a shortcode name" class="widefat" required="required"/><div id="sc_code"></div></span>
 		</div>
 		
 
 		<div class="sc_section">
-			<label for="sc_content" class="sc_fld_title"><?php _e( "Content:", 'shortcoder' ); ?>:</label>
+			<label for="sc_content" class="sc_fld_title"><?php _e( "Content:", 'shortcoder' ); ?></label>
 			<?php wp_editor( $sc_content, 'sc_content', array( 'wpautop'=> false, 'textarea_rows'=> 8 )); ?>
 		</div>
 		
@@ -308,6 +317,9 @@ function sc_admin_page(){
 	<a href="http://www.aakashweb.com/" target="_blank" class="sc_credits">a plugin from Aakash Web</a>
 </p>
 
+<script>
+var sc_version = '<?php echo SC_VERSION; ?>';
+</script>
 
 </div><!-- Wrap -->
 
