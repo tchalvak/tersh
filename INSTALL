@@ -1,0 +1,6 @@
+The site code is tracked via the git repository.
+However, it does include a git submodule for customizations doen to the wp-stripe plugin, so you'll have to initialize that submodule manually as well, for now this is done via a manual clone.
+
+git clone git@github.com:BitLucid/wp-stripe.git www/wp-content/plugins/wp-stripe
+git submodule foreach --recursive git checkout master
+
