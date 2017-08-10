@@ -3,3 +3,8 @@ Tersh Ronalds DOT com
 ====
 
 This is the repo for the website tershronalds.com built by his ever-loving son, Roy Ronalds, of bitlucid.com
+
+To pull security updates for wordpress:
+
+    wp core update
+    wp plugins update --all
