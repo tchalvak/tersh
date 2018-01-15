@@ -2,13 +2,13 @@
 /*
 Plugin Name: Shortcoder
 Plugin URI: https://www.aakashweb.com/
-Description: Shortcoder is a plugin which allows to create a custom shortcode and store HTML, Javascript and other snippets in it. So if that shortcode is used in any post or pages, then the code stored in the shortcode get executed in that place. You can create a shortcode for Youtube videos, adsense ads, buttons and more.
+Description: Shortcoder is a plugin which allows to create a custom shortcode and store HTML, JavaScript and other snippets in it. So if that shortcode is used in any post or pages, then the code stored in the shortcode get executed in that place. You can create a shortcode for Youtube videos, adsense ads, buttons and more.
 Author: Aakash Chakravarthy
-Version: 4.0.3
+Version: 4.1.4
 Author URI: https://www.aakashweb.com/
 */
 
-define( 'SC_VERSION', '4.0.3');
+define( 'SC_VERSION', '4.1.4' );
 define( 'SC_PATH', plugin_dir_path( __FILE__ ) ); // All have trailing slash
 define( 'SC_URL', plugin_dir_url( __FILE__ ) );
 define( 'SC_ADMIN_URL', trailingslashit( plugin_dir_url( __FILE__ ) . 'admin' ) );
@@ -43,11 +43,12 @@ class Shortcoder{
     public static function includes(){
         
         include_once( SC_PATH . 'includes/metadata.php' );
+        include_once( SC_PATH . 'includes/import.php' );
         include_once( SC_PATH . 'admin/sc-admin.php' );
         
     }
     
-    public static function execute_shortcode( $atts, $content ) { 
+    public static function execute_shortcode( $atts, $content ) {
         
         $shortcodes = self::list_all();
         
@@ -206,6 +207,10 @@ class Shortcoder{
             'hide_admin' => 0,
             'devices' => 'all'
         );
+    }
+    
+    public static function can_edit_sc(){
+        return current_user_can( 'manage_options' );
     }
     
     public static function wp_44_workaround( $content ){

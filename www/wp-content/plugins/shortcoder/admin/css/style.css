@@ -192,6 +192,7 @@ h1.sc_title .title-count {
     position: absolute;
     display: none;
     background: #fff;
+    z-index: 9999;
 }
 .params_wrap li{
     position: relative;
@@ -318,6 +319,51 @@ h1.sc_title .title-count {
     margin-right: 5px;
 }
 
+#import_form{
+    display: none;
+}
+.search_btn .search_box{
+    display: none;
+}
+.search_btn.active .search_box{
+    display: inline;
+}
+.search_box{
+    height: 26px;
+    border: 0;
+    margin: 0 -10px 0 10px;
+    border-left: 1px solid #ccc;
+    border-radius: 0 3px 3px 0;
+}
+.search_btn .dashicons-search{
+    position: relative;
+}
+.search_btn.filtered .dashicons-search{
+    color: #f44336;
+}
+.search_empty_msg{
+    margin: 40px 0 20px 0;
+}
+
+.sc_note{
+    background: #fffbdc;
+    padding: 10px;
+    color: #965400;
+    border-radius: 5px;
+    position: relative;
+    padding-left: 50px;
+    box-shadow: 0 2px 1px -2px;
+}
+.sc_note:before {
+    content: "\f348";
+    font-family: dashicons;
+    position: absolute;
+    left: 15px;
+    font-size: 25px;
+    opacity: 0.8;
+    top: 12px;
+}
+
 .rate_link{
     float: right;
 }
@@ -348,6 +394,18 @@ h1.sc_title .title-count {
     color: #000;
 }
 
+.button em {
+    display: none;
+}
+
+.button:hover em {
+    display: inline-block;
+}
+
+.fright{
+    float: right;
+}
+
 @keyframes spin {
     from {transform:rotate(0deg);}
     to {transform:rotate(360deg);}
@@ -360,4 +418,15 @@ h1.sc_title .title-count {
   height: 0;
   visibility: hidden;
   font-size: 0;
+}
+.sc_switch_editor{
+    margin: 2px 0 0 5px !important;
+}
+.sc_switch_editor .dashicons {
+    margin-top: 4px !important;
+}
+
+.CodeMirror{
+    border: 1px solid #ccc;
+    margin-top: 15px;
 }

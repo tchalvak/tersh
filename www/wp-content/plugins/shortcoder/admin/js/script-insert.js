@@ -87,6 +87,28 @@ $(document).ready(function(){
         sort( $( '.sc_shortcode' ), last_sort );
     });
     
+    $( document ).on( 'keyup', '.search_box', function(){
+        var re = new RegExp($(this).val(), 'gi');
+        $('.sc_wrap .sc_shortcode').each(function(){
+            var name = $(this).attr('data-name');
+            if( name.match(re) === null ){
+                $(this).hide();
+            }else{
+                $(this).show();
+            }
+        });
+        
+        var visible = $('.sc_wrap .sc_shortcode:visible').length;
+        var $no_scs_msg = $('.sc_wrap').find('p');
+        if( visible == 0 ){
+            if( $no_scs_msg.length == 0 ){
+                $('.sc_wrap').append( '<p align="center"><i>No shortcodes match search term !</i></p>' );
+            }
+        }else{
+            $no_scs_msg.remove();
+        }
+    });
+    
 });
     
 })( jQuery );

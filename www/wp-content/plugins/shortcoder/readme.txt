@@ -6,8 +6,8 @@ Tags: shortcode, html, javascript, shortcodes, short code, posts, pages, widgets
 Donate link: https://goo.gl/qMF3iE
 License: GPLv2 or later
 Requires at least: 3.3
-Tested up to: 4.8
-Stable tag: 4.0.3
+Tested up to: 4.9.1
+Stable tag: 4.1.4
 
 Create custom "Shortcodes" easily for HTML, JavaScript snippets and use the shortcodes within posts, pages & widgets.
 
@@ -30,7 +30,7 @@ Shortcoder is a plugin which allows to create a custom shortcode and store HTML,
 * Insert: WordPress parameters in shortcode
 * Visual editor for adding shortcode contents.
 * Globally disable the shortcode when not needed.
-* Can disable the shortcode, showing it to admins.
+* Can disable the shortcode to admins.
 
 [youtube="https://www.youtube.com/watch?v=GrlRADfvjII"]
 
@@ -90,6 +90,28 @@ Note: When you disable a shortcode, the shortcode will not be executed in the pa
 [More Screenshots](https://www.aakashweb.com/wordpress-plugins/shortcoder/)
 
 == Changelog ==
+
+= 4.1.4 =
+* New: Codemirror powered syntax highlighted shortcode content code editor (beta).
+
+= 4.1.3 =
+* Fix: Shortcode names with not-allowed characters cannot be edited/deleted.
+* New: Shortcode imports made can now be fresh or overwritten.
+* New: Only users with `manage_options` capability will see "edit shortcode" option in insert window.
+* Fix: Import failure with UTF-8 characters.
+* Fix: Case sensitive search in admin pages.
+* Fix: Minor admin interface changes.
+
+= 4.1.2 =
+* New: Search box for shortcodes in admin page.
+
+= 4.1.1 =
+* Fix: HTTP 500 error because of syntax error in import module.
+
+= 4.1 =
+* New: Import/export feature for shortcodes.
+* Fix: Visual editor is now disabled by default.
+* Fix: Added instructions in admin page.
 
 = 4.0.3 =
 * New: Added feature to sort created shortcodes list.

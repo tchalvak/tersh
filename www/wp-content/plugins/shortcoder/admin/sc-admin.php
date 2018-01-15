@@ -83,13 +83,28 @@ class Shortcoder_Admin{
     
     public static function list_shortcodes(){
         
+        Shortcoder_Import::check_import();
+        
         $shortcodes = Shortcoder::list_all();
         $g = self::clean_get();
         
-        echo '<h3 class="page_title">' . __( 'List of shortcodes created', 'shortcoder' );
+        echo '<h3 class="page_title">' . __( 'List of shortcodes created', 'shortcoder' ) . ' (' . count( $shortcodes ) . ')';
         echo '<span class="sc_menu">';
+        
+        echo '<span class="button search_btn" title="' . __( 'Search shortcodes', 'shortcoder' ) . '"><span class="dashicons dashicons-search"></span><input type="search" class="search_box" placeholder="Search ..."/></span>';
+        
+        echo '<label for="import" class="button"><span class="dashicons dashicons-download"></span><em>' . __( 'Import shortcodes', 'shortcoder' ) . '</em></label>';
+        
+        echo '<a href="' . self::get_link(array(
+                'action' => 'sc_export',
+                '_wpnonce' => wp_create_nonce( 'sc_export_data' )
+            ), 'admin-ajax.php' ) . '" class="button"><span class="dashicons dashicons-upload"></span><em>' . __( 'Export shortcodes', 'shortcoder' ) . '</em></a>';
+        
+        
         echo '<button class="button sort_btn" title="' . __( 'Sort list', 'shortcoder' ) . '"><span class="dashicons dashicons-menu"></span> <span class="dashicons dashicons-arrow-down-alt sort_icon"></span></button>';
+        
         echo '<a href="' . self::get_link(array( 'action' => 'new' )) . '" class="button button-primary sc_new_btn"><span class="dashicons dashicons-plus"></span> ' . __( 'Create a new shortcode', 'shortcoder' ) . '</a>';
+        
         echo '</span>';
         echo '</h3>';
         
@@ -110,20 +125,20 @@ class Shortcoder_Admin{
             
             $link = self::get_link(array(
                 'action' => 'edit',
-                'name' => $name
+                'id' => base64_encode( $name )
             ));
             
             $delete_link = self::get_link(array(
                 'action' => 'sc_admin_ajax',
                 'do' => 'delete',
-                'name' => $name,
+                'id' => base64_encode( $name ),
                 '_wpnonce' => wp_create_nonce( 'sc_delete_nonce' )
             ), 'admin-ajax.php' );
             
             $disabled_text = ( $data[ 'disabled' ] == '1' ) ? '<small class="disabled_text">' . __( 'Temporarily disabled', 'shortcoder' ) . '</small>' : '';
             
             echo '<li data-name="' . esc_attr( $name ) . '">';
-            echo '<a href="' . $link . '" class="sc_link" title="' . __( 'Edit shortcode', 'shortcoder' ) . '">' . $name . $disabled_text . '</a>';
+            echo '<a href="' . $link . '" class="sc_link" title="' . __( 'Edit shortcode', 'shortcoder' ) . '">' . esc_attr( $name ) . $disabled_text . '</a>';
             echo '<span class="sc_controls">';
             echo '<a href="#" class="sc_copy" title="' . __( 'Copy shortcode', 'shortcoder' ) . '"><span class="dashicons dashicons-editor-code"></span></a>';
             echo '<a href="' . $delete_link . '" class="sc_delete" title="' . __( 'Delete', 'shortcoder' ) . '"><span class="dashicons dashicons-trash"></span></a>';
@@ -136,7 +151,7 @@ class Shortcoder_Admin{
         }
         echo '</ul>';
             
-        
+        Shortcoder_Import::import_form();
         
     }
     
@@ -161,12 +176,18 @@ class Shortcoder_Admin{
             $page_title = __( 'Edit shortcode', 'shortcoder' );
             $action_btn = __( 'Save settings', 'shortcoder' );
             
-            if( !( isset( $g[ 'name' ] ) && array_key_exists( $g[ 'name' ], $shortcodes ) ) ){
-                echo '<p align="center">' . __( 'Invalid shortcode or Shortcode does not exist !' ) . '</p>';
+            if( !isset( $g[ 'id' ] ) ){
+                echo '<p align="center">' . __( 'No shortcode ID provided !' ) . '</p>';
                 return false;
             }
             
-            $sc_name = $g[ 'name' ];
+            $sc_name = base64_decode( $g[ 'id' ] );
+            
+            if( !array_key_exists( $sc_name, $shortcodes ) ){
+                echo '<p align="center">' . __( 'Invalid shortcode ID or no such shortcode with name [' . esc_attr( $sc_name ) . '] exists !' ) . '</p>';
+                return false;
+            }
+            
             $values = $shortcodes[ $sc_name ];
             
         }
@@ -183,14 +204,25 @@ class Shortcoder_Admin{
         
         echo '<div class="sc_section">';
         echo '<label for="sc_name">' . __( 'Name', 'shortcoder' ) . '</label>';
-        echo '<div class="sc_name_wrap"><input type="text" id="sc_name" name="sc_name" value="' . esc_attr( $sc_name ) . '" class="widefat" required="required" ' . ( ( $action == 'edit' ) ? 'readonly="readonly"' : 'placeholder="' . __( 'Enter a name for the shortcode, case sensitive', 'shortcoder' ) . '"' ) . ' pattern="[a-zA-z0-9 \-]+" title="' . __( 'Allowed characters A to Z, a to z, 0 to 9, hyphens, underscores and space', 'shortcoder' ) . '" />';
+        echo '<div class="sc_name_wrap"><input type="text" id="sc_name" name="sc_name" value="' . esc_attr( $sc_name ) . '" class="widefat" required="required" ' . ( ( $action == 'edit' ) ? 'readonly="readonly"' : 'placeholder="' . __( 'Enter a name for the shortcode, case sensitive', 'shortcoder' ) . '"' ) . ' pattern="[a-zA-z0-9 \-]+" />';
         echo ( $action == 'edit' ) ? '<div class="copy_shortcode">Your shortcode is - <strong contenteditable>' . self::get_shortcode( $sc_name ) . '</strong></div>' : '';
+        echo ( $action != 'edit' ) ? '<div class="copy_shortcode">' . __( 'Allowed characters A to Z, a to z, 0 to 9, hyphens, underscores and space', 'shortcoder' ) . '</div>' : '';
         echo '</div></div>';
         
         echo '<div class="sc_section">';
         echo '<label for="sc_content">' . __( 'Shortcode content', 'shortcoder' ) . '</label>';
-        wp_editor( $values[ 'content' ], 'sc_content', array( 'wpautop'=> false, 'textarea_rows'=> 12 ) );
+        
+        $editor_type = isset( $g[ 'editor' ] ) ? intval( $g[ 'editor' ] ) : 0;
+        
+        if( $editor_type == 2 ){
+            self::load_codemirror_editor( $values[ 'content' ] );
+        }else{
+            wp_editor( $values[ 'content' ], 'sc_content', array( 'wpautop'=> false, 'textarea_rows'=> 15, 'tinymce' => ( $editor_type == 1 ) ) );
+        }
+        
         echo '</div>';
+        
+        echo '<p class="sc_note">' . __( 'Note: You can use any HTML, JavaScript, CSS as shortcode content. Shortcoder does not manipulate the shortcode content. What you provide above is what you get as output. Please verify the shortcode content for any syntax or JavaScript errors.', 'shortcoder' ) . '</p>';
         
         echo '<h4>' . __( 'Settings', 'shortcoder' ) . '</h4>';
         echo '<div class="sc_section">';
@@ -223,7 +255,7 @@ class Shortcoder_Admin{
             $delete_link = self::get_link(array(
                 'action' => 'sc_admin_ajax',
                 'do' => 'delete',
-                'name' => $sc_name,
+                'id' => base64_encode( $sc_name ),
                 '_wpnonce' => wp_create_nonce( 'sc_delete_nonce' )
             ), 'admin-ajax.php' );
             echo '<a href="' . $delete_link . '" class="button sc_delete_ep" title="' . __( 'Delete', 'shortcoder' ) . '"><span class="dashicons dashicons-trash"></span></a>';
@@ -323,8 +355,9 @@ class Shortcoder_Admin{
         
         $g = self::clean_get();
         
-        if( $g[ 'do' ] == 'delete' && isset( $g[ 'name' ] ) && check_admin_referer( 'sc_delete_nonce' ) ){
-            if( self::delete_shortcode( $g[ 'name' ] ) ){
+        if( $g[ 'do' ] == 'delete' && isset( $g[ 'id' ] ) && check_admin_referer( 'sc_delete_nonce' ) ){
+            $sc_name = base64_decode( $g[ 'id' ] );
+            if( self::delete_shortcode( $sc_name ) ){
                 echo 'DELETED';
             }else{
                 echo 'FAILED';
@@ -380,6 +413,19 @@ class Shortcoder_Admin{
         return $plugins;
     }
     
+    public static function load_codemirror_editor( $value ){
+        echo '<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.32.0/codemirror.min.css" rel="stylesheet">';
+        echo '<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.32.0/codemirror.min.js"></script>';
+        echo '<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.32.0/mode/htmlmixed/htmlmixed.min.js"></script>';
+        echo '<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.32.0/mode/css/css.min.js"></script>';
+        echo '<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.32.0/mode/xml/xml.min.js"></script>';
+        echo '<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.32.0/mode/javascript/javascript.min.js"></script>';
+        
+        echo '<textarea name="sc_content" id="sc_content">' . esc_textarea( $value ) . '</textarea>';
+        
+        echo '<script>var sc_cm_editor = true;</script>';
+    }
+    
     public static function page_bottom(){
         
         echo '<div class="coffee_box">
@@ -418,9 +464,10 @@ class Shortcoder_Admin{
         
         <a href="https://goo.gl/r8Qr7Y" class="help_link" target="_blank" title="Help"><span class="dashicons dashicons-editor-help"></span></a>
         <a href="https://goo.gl/URfxp2" class="help_link" target="_blank" title="Report issue"><span class="dashicons dashicons-flag"></span></a>
+        <a href="https://goo.gl/ltvnIE" class="help_link" target="_blank" title="Rate 5 stars"><span class="dashicons dashicons-star-filled"></span></a>
         
         <a class="share_btn googleplus" href="https://plus.google.com/share?url=https%3A%2F%2Fwww.aakashweb.com%2Fwordpress-plugins%2Fshortcoder%2F" target="_blank"><span class="dashicons dashicons-googleplus"></span> Share</a>
-        <a class="share_btn twitter" href="https://twitter.com/intent/tweet?ref_src=twsrc%5Etfw&related=vaakash&text=Check%20out%20Shortcoder,%20a%20%23wordpress%20plugin%20to%20create%20shortcodes%20for%20HTML,%20JavaScript%20snippets%20easily&tw_p=tweetbutton&url=https%3A%2F%2Fwww.aakashweb.com%2Fwordpress-plugins%2Fwp-socializer%2F&via=vaakash" target="_blank"><span class="dashicons dashicons-twitter"></span> Tweet about Shortcoder</a>
+        <a class="share_btn twitter" href="https://twitter.com/intent/tweet?ref_src=twsrc%5Etfw&related=vaakash&text=Check%20out%20Shortcoder,%20a%20%23wordpress%20plugin%20to%20create%20shortcodes%20for%20HTML,%20JavaScript%20snippets%20easily&tw_p=tweetbutton&url=https%3A%2F%2Fwww.aakashweb.com%2Fwordpress-plugins%2Fshortcoder%2F&via=vaakash" target="_blank"><span class="dashicons dashicons-twitter"></span> Tweet about Shortcoder</a>
         
         </div>';
     }

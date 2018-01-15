@@ -9,8 +9,13 @@
 
 <h2 class="sc_head">Insert shortcode to editor
 <span class="sc_menu">
+<input type="search" class="button search_box" placeholder="Search ..." />
 <a href="#" class="button sort_btn">Sort list</a>
-<a href="<?php echo admin_url( 'options-general.php?page=shortcoder&action=new' ); ?>" target="_blank" class="button new_btn">Create new shortcode</a>
+<?php
+if( Shortcoder::can_edit_sc( 'manage_options' ) ){
+    echo '<a href="' . admin_url( 'options-general.php?page=shortcoder&action=new' ) . '" target="_blank" class="button new_btn">Create new shortcode</a>';
+}
+?>
 </span>
 </h2>
 
@@ -29,7 +34,15 @@ if( empty( $shortcodes ) ){
             $name = esc_attr( $key );
             $value = wp_parse_args( $value, Shortcoder::defaults() );
             $disabled_text = ( $value[ 'disabled' ] == '1' ) ? '<small class="disabled_text">Temporarily disabled</small>' : '';
-            $options = '<span class="sc_options"><button class="button sc_quick_insert">Quick insert</button> <a href="' . esc_attr( admin_url( 'options-general.php?page=shortcoder&action=edit&name=' . $name ) ) . '" target="_blank" class="button">Edit</a></span>';
+            
+            $options = '<span class="sc_options">';
+            $options .= '<button class="button sc_quick_insert">Quick insert</button>';
+            
+            if( Shortcoder::can_edit_sc( 'manage_options' ) ){
+                $options .= '<a href="' . esc_attr( admin_url( 'options-general.php?page=shortcoder&action=edit&id=' . base64_encode( $name ) ) ) . '" target="_blank" class="button">Edit</a>';
+            }
+            
+            $options .= '</span>';
             
             echo '<div class="sc_shortcode" data-name="' . $name . '">';
             echo '<div class="sc_shortcode_name">' . $name . $disabled_text . $options . '</div>';

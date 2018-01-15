@@ -4,6 +4,21 @@ $(document).ready(function(){
     var delete_ctext = 'Are you sure want to delete this shortcode ?';
     var last_sort = 'desc';
     
+    var init = function(){
+        if(window.sc_cm_editor){
+            window.sc_cm = CodeMirror.fromTextArea( document.getElementById( 'sc_content' ), {
+                lineNumbers: true,
+                mode: "htmlmixed",
+                indentWithTabs: false,
+                lineWrapping: true
+            });
+            sc_cm.setSize( null, 500 );
+            sc_cm.on( 'change', function(){
+                sc_cm.save();
+            });
+        }
+    }
+    
     var sort = function( ele, orderby ){
         var total = ele.length;
         while( total ){
@@ -19,6 +34,15 @@ $(document).ready(function(){
                 }
             });
             total--;
+        }
+    }
+    
+    var insert_in_editor = function( data ){
+        if( window.sc_cm_editor ){
+            var doc = window.sc_cm.getDoc();
+            doc.replaceRange( data, doc.getCursor() );
+        }else{
+            send_to_editor( data );
         }
     }
     
@@ -100,10 +124,24 @@ $(document).ready(function(){
     });
     
     $(window).load(function(){
-        $( '.wp-media-buttons' ).append(function(){
+        
+        var insert_button = function(){
             return '<button class="button button-primary sc_insert_params"><span class="dashicons dashicons-plus"></span> Insert shortcode paramerters <span class="dashicons dashicons-arrow-down"></span></button>';
-        });
+        }
+        
+        $( '.wp-media-buttons' ).append( insert_button );
+        
+        if( window.sc_cm_editor ){
+            $( '.CodeMirror' ).before( insert_button );
+        }
+        
         $( '.params_wrap' ).appendTo( 'body' );
+        
+        $( '.quicktags-toolbar' ).append(function(){
+            var html = '<a href="#" class="ed_button button button-small fright sc_switch_editor" data-type="1" title="Enable visual editor"><span class="dashicons dashicons-visibility"></span> Visual editor</a>';
+            html += '<a href="#" class="ed_button button button-small fright sc_switch_editor" data-type="2" title="Enable code editor"><span class="dashicons dashicons-editor-code"></span> Code editor (beta)</a>';
+            return html;
+        });
     });
     
     $( document ).on( 'click', '.sc_insert_params', function(e){
@@ -126,7 +164,7 @@ $(document).ready(function(){
         var param_val = $cp_box.val().trim();
         
         if( param_val != '' && $cp_box[0].checkValidity() ){
-            send_to_editor( '%%' + param_val + '%%' );
+            insert_in_editor( '%%' + param_val + '%%' );
             $cp_info.removeClass( 'red' );
             $( '.params_wrap' ).hide();
         }else{
@@ -136,10 +174,8 @@ $(document).ready(function(){
     });
     
     $( document ).on( 'click', '.wp_params li', function(){
-        
-        send_to_editor( '$$' + $(this).data( 'id' ) + '$$' );
+        insert_in_editor('$$' + $(this).data( 'id' ) + '$$');
         $( '.params_wrap' ).hide();
-        
     });
     
     $( document ).on( 'change', '.coffee_amt', function(){
@@ -153,6 +189,66 @@ $(document).ready(function(){
         $( '.sort_icon' ).toggleClass( 'dashicons-arrow-down-alt' );
         $( '.sort_icon' ).toggleClass( 'dashicons-arrow-up-alt' );
     });
+    
+    $( document ).on( 'change', '#import', function(){
+        if( !confirm( $( '.import_desc' ).text() ) ){
+            return false;
+        }
+        
+        if( confirm( $( '.import_desc2' ).text() ) ){
+            $( '#fresh_import' ).prop( 'checked', true );
+        }else{
+            $( '#fresh_import' ).prop( 'checked', false );
+        }
+        
+        $( '#import_form' ).submit();
+    });
+    
+    $( document ).on( 'click', '.search_btn', function(e){
+        var $search_box = $(this).find('.search_box');
+        if(e.target === $search_box[0]){
+            return false;
+        }
+        $(this).toggleClass('active');
+        $search_box.focus();
+    });
+    
+    $( document ).on( 'keyup', '.search_box', function(){
+        var search_term = $(this).val();
+        var re = new RegExp(search_term, 'gi');
+        $('.sc_list li').each(function(){
+            var name = $(this).attr('data-name');
+            if(name.match(re) === null){
+                $(this).hide();
+            }else{
+                $(this).show();
+            }
+        });
+        
+        if(search_term){
+            $(this).parent().addClass('filtered');
+        }else{
+            $(this).parent().removeClass('filtered');
+        }
+        
+        var visible = $('.sc_list li:visible').length;
+        var $no_scs_msg = $('.sc_list').find('p');
+        if( visible == 0 ){
+            if( $no_scs_msg.length == 0 ){
+                $('.sc_list').append( '<p align="center" class="search_empty_msg"><i>No shortcodes match search term !</i></p>' );
+            }
+        }else{
+            $no_scs_msg.remove();
+        }
+        
+    });
+    
+    $( document ).on( 'click', '.sc_switch_editor', function(e){
+        e.preventDefault();
+        window.location = window.location + '&editor=' + $(this).data('type');
+    });
+    
+    init();
     
 });
 })( jQuery );

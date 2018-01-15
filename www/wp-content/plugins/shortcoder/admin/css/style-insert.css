@@ -109,6 +109,8 @@ hr{
     color: #888;
     font-size: 11px;
     vertical-align: middle;
+    margin-left: -1px;
+    border-radius: 0;
 }
 .sc_options .button:hover{
     box-shadow: 0 1px 4px -3px #333;
@@ -139,6 +141,11 @@ hr{
     opacity: 1;
 }
 
+.search_box{
+    width: 150px;
+    cursor: auto;
+}
+
 .coffee_box{
     padding: 10px;
     border: 1px solid #4CAF50;
@@ -165,4 +172,12 @@ hr{
 }
 .coffee_box p{
     font-size: 13px;
+}
+
+@media screen and (max-width:750px){
+    .sc_menu {
+        display: block;
+        margin: 10px 0 0 -40px;
+        float: none;
+    }
 }
